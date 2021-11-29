@@ -1,0 +1,268 @@
+<html>
+
+<body background="/static/img/gg.jpeg">
+    <div class="from">  
+        <div class="submit">
+            <img src="/static/img/GDUT_logo_school1.png">
+            <span class="form_title">统一登录</span>
+            <div class="form_input">
+                <span>学号：</span>
+                <input class="inputs" type="text" id="id_username" name="username">
+            </div>
+            <div class="form_input">
+                <span>密码</span>
+                <input class="inputs" type="text" id="id_password"  name="password">
+            </div>
+            <div class="form_input">
+                <span>验证码</span>
+                <input class="inputs" type="text" id="id_verifycode" name="verifycode">
+            </div>
+            <div class="btn_submit"> 
+                <img id = "img" src = "" onclick="changeVerifyCode()" class="verifycode">
+            </div>
+            <div class="btn_submit">
+                <button class="btn" onclick="submit()">提交</button></a>
+            </div>
+            <div class="footer">
+                <p>简睿科技 可信</p>
+            </div>
+        </div>    
+
+</div>
+
+</body>
+<style type="text/css">
+    * {
+    margin: 0;
+    padding: 0
+}
+.verifycode{
+    border: none;
+    width: 160px;
+    height: 80px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+.from {
+    position: relative;
+}
+
+.bgc {
+    width: 100%;
+}
+
+.submit {
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    margin-top: 150px;
+    width: 500px;
+    height: 500px;
+    background: rgba(240, 240, 240, 0.6);
+    border-radius: 10px;
+    /*color: #fff;*/
+    display: flex;
+    flex-direction: column;
+}
+
+.form_title {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 18px;
+}
+
+.form_input {
+    padding: 0 30px;
+    box-sizing: border-box;
+    display: flex;
+    margin-top: 20px;
+    background: rgba(250, 255, 255, 0.2);
+}
+
+.verifycode_inputs {
+    height: 40px;
+    width: 250px;
+    border-radius: 5px;
+    border: none;
+    background-color: #eee;
+    color: #666;
+    padding-left: 20px;
+}
+.inputs {
+    height: 40px;
+    width: 300px;
+    border-radius: 5px;
+    border: none;
+    background-color: #eee;
+    color: #666;
+    padding-left: 20px;
+}
+
+
+.form_input span {
+    width: 85px;
+    align-self: center;
+}
+
+.btn_submit {
+    align-self: center;
+}
+
+.btn {
+    border: none;
+    width: 80px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    background: #999;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background: #666;
+}
+
+.back {
+    margin-left: 10px;
+}
+
+.home_href {
+    border: none;
+    width: 80px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    background: #FFD204;
+}
+.footer{
+    height: 40px;
+    line-height: 40px;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+</style>
+<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/js/aes.js"></script>
+<script type="text/javascript">
+function changeVerifyCode(){
+    currentTime = new Date().getTime();
+    // document.getElementById("img").src = "https://jxfw.gdut.edu.cn/yzm?d=" + currentTime;
+    document.getElementById("img").src = '/api/gdut/yzm?d='  + currentTime;
+    console.log(document.cookie)
+}
+
+var getParam = function(name){
+    var search = document.location.search;
+    var pattern = new RegExp("[?&]"+name+"\=([^&]+)", "g");
+    var matcher = pattern.exec(search);
+    var items = null;
+    if(null != matcher){
+            try{
+                    items = decodeURIComponent(decodeURIComponent(matcher[1]));
+            }catch(e){
+                    try{
+                            items = decodeURIComponent(matcher[1]);
+                    }catch(e){
+                            items = matcher[1];
+                    }
+            }
+    }
+    return items;
+};
+
+function submit() {
+    var account = $("#id_account").val();
+    var password = $("#id_password").val();
+    var verifycode = $("#id_verifycode").val()
+    var code = getParam('code')
+
+    // 密码加密
+    var key = CryptoJS.enc.Utf8.parse(verifycode+verifycode+verifycode+verifycode);
+    var srcs = CryptoJS.enc.Utf8.parse(password);
+    var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+    password = encrypted.ciphertext.toString();
+    $.ajax({
+    url:'/api/gdut/login',
+    type : "post",
+    data : {
+    account : account,
+    password : password,
+    verifycode : verifycode
+    },
+    dataType : "json",
+    complete : function(res) {
+        if (res.responseJSON.code == 0 ) {
+            alert("登录成功");
+            $.ajax({
+            url:'/api/gdut/import',
+            type:'post',
+            dataType:'json',
+            data:{
+                code:code
+            }
+            });
+            window.location.href="https://easypustech.feishu.cn/calendar/week"
+        }       
+        else {
+            alert(res.responseJSON.message)
+        }
+
+    }
+    })
+};
+
+function gdut() {
+    var l_index = layer.load(1, {
+        shade : [ 0.1, '#fff' ]
+    //0.1透明度的白色背景
+     });
+    
+    var account = $("#account").val();
+    var pwd = $("#password").val();
+    var verifycode = $("#j_captcha").val()
+    
+    // 密码加密
+    var key = CryptoJS.enc.Utf8.parse(verifycode+verifycode+verifycode+verifycode);
+    var srcs = CryptoJS.enc.Utf8.parse(password);
+    var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+    password = encrypted.ciphertext.toString();
+    
+    //ajax提交表单，#login_form为表单的ID。 如：$('#login_form').ajaxSubmit(function(data) { ... });
+    $.ajax({
+    url : "https://jxfw.gdut.edu.cn/new/login",
+    type : "post",
+    data : {
+    account : account,
+    pwd : password,
+    verifycode : verifycode
+},
+dataType : "json",
+complete : function() {
+    layer.close(l_index);
+},
+success : function(result) {
+    if (result.code >= 0) {//登录成功
+        alert('登录成功');
+    } else {//登录失败
+        changeVerifyCode();
+        alert(result.message);
+    }
+        },
+        error : function() {
+            layer.alert("登录超时，请稍后重试！");
+        }
+    });
+}
+function jump(){ 
+    submit()
+    window.location.href="https://easypustech.feishu.cn/calendar/week";
+
+}
+changeVerifyCode()
+</script>
+</html>

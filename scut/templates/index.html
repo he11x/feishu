@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+</head>
+<body background="/static/img/sh.jpeg">
+    <div class="from">
+    <div class="submit">
+        <span class="form_title">简睿科技 课表导入</span>
+        <img src="/static/img/head_logo.png" onclick="scut()">
+        <img src="/static/img/GDUT_logo_school1.png" onclick="gdut()">
+        <button class="btn" onclick="mypass()">mypass 戳我</button>
+        <button class="btn" onclick="test()"> test</button>
+        <span class="form_title">可信制作</span>
+    </div>
+    </div>
+
+<script type="text/javascript">
+function gdut() {
+    window.location.href="/gdut/schedule";
+}
+function scut() {
+    window.location.href="/scut/schedule";
+}
+function mypass() {
+    window.location.href="/scut/mypass/sample";
+}
+function test() {
+    window.location.href="/test";
+}
+</script>
+</body>
+<style type="text/css">
+.bgc {
+    width: 100%;
+}
+.from {
+    position: relative;
+}
+.submit {
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    margin-top: 150px;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.form_title {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 18px;
+}
+.btn {
+    align-self: center;
+    border: none;
+    width: 120px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    background: #456;
+    margin-top: 40px;
+}
+</style>
+</html>
+ 

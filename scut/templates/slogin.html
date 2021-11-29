@@ -1,0 +1,207 @@
+<html>
+<body background="/static/img/bj.jpeg">
+    <div class="from">     
+        <div class="submit">
+            <img src="/static/img/head_logo.png">
+            <span class="form_title">统一登录</span>
+            <div class="form_input">
+                <span>学号：</span>
+                <div>
+                <input class="inputs" type="text" id="id_username" name="username">
+                </div>
+            </div>
+            <div class="form_input">
+                <span>密码</span>
+                <input class="inputs" type="text" id="id_password"  name="password">
+            </div>
+            <div class="btn_submit">
+                    <button class="btn" onclick="submit()">提交</button></a>
+            </div>
+            <div class="footer">
+                <p>简睿科技 可信</p>
+            </div>
+        </div>    
+
+</div>
+
+</body>
+<style type="text/css">
+    * {
+    margin: 0;
+    padding: 0
+}
+
+.from {
+    position: relative;
+}
+
+.bgc {
+    width: 100%;
+}
+
+.submit {
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    margin-top: 150px;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form_title {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 18px;
+}
+
+.form_input {
+    padding: 0 30px;
+    box-sizing: border-box;
+    display: flex;
+    margin-top: 20px;
+}
+
+.inputs {
+    height: 40px;
+    width: 300px;
+    border-radius: 5px;
+    border: none;
+    background-color: #eee;
+    color: #666;
+    padding-left: 20px;
+}
+
+.form_input span {
+    width: 85px;
+    align-self: center;
+}
+
+.btn_submit {
+    align-self: center;
+}
+
+.btn {
+    border: none;
+    width: 80px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    background: #999;
+    margin-top: 40px;
+}
+
+.btn:hover {
+    background: #666;
+}
+
+.back {
+    margin-left: 10px;
+}
+
+.home_href {
+    border: none;
+    width: 80px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    background: #FFD204;
+}
+.footer{
+    height: 40px;
+    line-height: 40px;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+</style>
+<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+var getParam = function(name){
+    var search = document.location.search;
+    var pattern = new RegExp("[?&]"+name+"\=([^&]+)", "g");
+    var matcher = pattern.exec(search);
+    var items = null;
+    if(null != matcher){
+            try{
+                    items = decodeURIComponent(decodeURIComponent(matcher[1]));
+            }catch(e){
+                    try{
+                            items = decodeURIComponent(matcher[1]);
+                    }catch(e){
+                            items = matcher[1];
+                    }
+            }
+    }
+    return items;
+};
+
+function submit() {
+       // body...
+    var username = $("#id_username").val();
+    var password = $("#id_password").val();
+    var code = (getParam('code'));
+    console.log(code)
+
+$.ajax({
+        url : "/api/scut/login",
+        type : "post",
+        async:true,
+        data : {
+            username: username,
+            password : password,
+        },
+        dataType : "json",
+        complete : function(res) {
+            var classList = JSON.stringify(res.responseJSON.data)
+            if (res.responseJSON.code == 412 ) {
+                alert("请输入账号密码");
+            }
+            if (res.responseJSON.code == 403) {
+                alert("用户名或密码错误");
+            }
+            if (res.responseJSON.code == '200') {
+                alert("登录成功");
+                
+                insert(code,classList);
+                jump();
+            }
+        
+    }
+    });
+};
+
+function insert(code,classList) {
+    $.ajax({
+        url:'/api/scut/import',
+        type : "post",
+        async:true,
+        data : {
+          data: classList,
+          code :code,
+        },
+        dataType:"json",
+        complete : function(res) {
+        if (res.responseJSON.code == 403) {
+                alert("code 过期");
+                window.location.href="/scut/schedule";
+        }
+    }
+    });
+};
+
+
+function jump(){ 
+    window.location.href="https://easypustech.feishu.cn/calendar/week";
+
+}
+
+</script>
+</html>

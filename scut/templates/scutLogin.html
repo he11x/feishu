@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+
+    <div style="margin: 15% 40%;">
+       <img src="/static/img/head_logo.png">
+       <form method="post">
+          <p>
+             <label for="id_username">用户名：</label>
+             <input type="text" id="id_username" name="username" placeholder="用户名" autofocus required>
+          </p>
+          <p>
+             <label for="id_password">密码：</label>
+             <input type="password" id="id_password" placeholder="密码" name="password" autofocus required >
+          <!-- <input type="submit" value="确定" ms-click ="submit" > -->
+          <!-- <button onclick="submit()">确定</button> -->
+          <!-- 要在from外面 -->
+       </form>
+       <button onclick="submit()">确定</button>
+       <!-- <button onclick="jump()">jump</button> -->
+    </div>
+</body>
+<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+var getParam = function(name){
+    var search = document.location.search;
+    var pattern = new RegExp("[?&]"+name+"\=([^&]+)", "g");
+    var matcher = pattern.exec(search);
+    var items = null;
+    if(null != matcher){
+            try{
+                    items = decodeURIComponent(decodeURIComponent(matcher[1]));
+            }catch(e){
+                    try{
+                            items = decodeURIComponent(matcher[1]);
+                    }catch(e){
+                            items = matcher[1];
+                    }
+            }
+    }
+    return items;
+};
+
+function submit() {
+       // body...
+    var username = $("#id_username").val();
+    var password = $("#id_password").val();
+    var code = (getParam('code'));
+    console.log(code)
+
+$.ajax({
+        url : "/api/scut/login",
+        type : "post",
+        async:true,
+        data : {
+            username: username,
+            password : password,
+        },
+        dataType : "json",
+        complete : function(res) {
+            var classList = JSON.stringify(res.responseJSON.data)
+            if (res.responseJSON.code == 412 ) {
+                alert("请输入账号密码");
+            }
+            if (res.responseJSON.code == 403) {
+                alert("用户名或密码错误");
+            }
+            if (res.responseJSON.code == '200') {
+                alert("登录成功");
+                
+                insert(code,classList);
+                jump();
+            }
+        
+    }
+    });
+};
+
+function insert(code,classList) {
+    $.ajax({
+        url:'/api/scut/import',
+        type : "post",
+        async:true,
+        data : {
+          data: classList,
+          code :code,
+        },
+        dataType:"json",
+        complete : function(res) {
+        if (res.responseJSON.code == 403) {
+                alert("code 过期");
+                window.location.href="/scut/schedule";
+        }
+    }
+    });
+};
+
+
+function jump(){ 
+    window.location.href="https://easypustech.feishu.cn/calendar/week";
+
+}
+
+</script>
+</html>
+ 

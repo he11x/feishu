@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://enroll.scut.edu.cn/door/out/h5/apply.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<meta name="x5-fullscreen" content="true">
+	<meta name="full-screen" content="yes">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+	<meta http-equiv="cache-control" content="max-age=0">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<title>外出申请</title>
+	<link rel="stylesheet" href="/static/css/layui.css">
+	<link rel="stylesheet" href="/static/css/weui.css">
+	<link rel="stylesheet" href="/static/css/apply.css">	
+<link id="layuicss-laydate" rel="stylesheet" href="/static/css/laydate.css" media="all"><link id="layuicss-layer" rel="stylesheet" href="/static/css/layer.css" media="all"><link id="layuicss-skincodecss" rel="stylesheet" href="/static/css/code.css" media="all"></head>
+<body>
+	<div id="container">
+		<!-- 加载中 -->
+		<div class="loading_mask" style="display: none;"></div>
+		<div class="loading_tip" style="display: none;">
+			<div class="loading_img">
+				<i class="weui-loading"></i>
+			</div>
+			<div class="">加载中...</div>
+		</div>
+	
+		<div class="weui-toptips weui-toptips_warn" id="topTips" style="display: none;">错误提示</div>
+		
+		<div class="js_dialog" id="weuiDialog" style="display: none;">
+			<div class="weui-mask"></div>
+			<div class="weui-dialog">
+				<div class="weui-dialog__bd">页面出错，请检查网络或授权！</div>
+				<div class="weui-dialog__ft">
+					<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_primary" onclick="Global_FN.refresh()">刷新页面</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="js_dialog" id="confirmDialog" style="display: none;">
+			<div class="weui-mask"></div>
+			<div class="weui-dialog">
+				<div class="weui-dialog__hd"><strong class="weui-dialog__title"></strong></div>
+				<div class="weui-dialog__bd" id="confirmText"></div>
+				<div class="weui-dialog__ft">
+					<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_primary" id="confirmBtn" onclick="Global_FN.closeDialog()">确认</a>
+				</div>
+			</div>
+		</div>
+		
+		<div id="weuiToast" style="display: none;">
+			<div class="weui-mask_transparent"></div>
+			<div class="weui-toast weui-toast_text">
+				<p class="weui-toast__content" id="toastText"></p>
+			</div>
+		</div>
+		
+		<div class="main">
+			<form class="input-group layui-form" lay-filter="filter_form">
+
+				<div class="weui-cells__group weui-cells__group_form">
+								
+					<div class="weui-cells__title">申请流程</div>
+					<div class="step_box"><div class="step line"><img src="/static/img/true.png"><span>提交</span></div><div class="step line"><img src="/static/img/true.png"><span>院级审批</span></div><div class="step "><img src="/static/img/true.png"><span>校级审批</span></div></div>
+								
+					<div class="weui-cells__title">外出信息</div>
+					<div class="weui-cells weui-cells_form">
+				
+						<div class="info_list">
+							<div><span class="bt">*</span>开始日期</div>
+							<div class="form_select">
+								<div class="dOutStartDate" id = "begintime"></div>
+								<span id="dOutStartDate">选择</span>
+							</div>
+						</div>
+						
+						<div class="info_list">
+							<div><span class="bt">*</span>结束日期</div>
+							<div class="form_select">
+								<div class="dOutEndDate" id='endtime'></div>
+								<span id="dOutEndDate">选择</span>
+							</div>
+						</div>
+						
+						<div class="info_list">
+							<div><span class="bt">*</span>外出地点</div>
+							<input type="text" name="sOutAddress" placeholder="-" autocomplete="off" value="五山校区">
+						</div>
+						
+						<div class="weui-input-row" style="padding: 0 .3rem .3rem; .3rem;">
+							<label class="smTitle"><span class="bt">*</span><span class="sNowAddr_required">外出事由</span> </label>
+							<div class="weui-cell" style="padding: 0rem;">
+								<div class="weui-cell__bd">
+									<textarea class="weui-textarea" name="sOutReason" placeholder="" rows="3" style="border: 1px solid #efefef;">开会</textarea>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					
+					<div class="weui-cells__title">我的信息</div>
+					<div class="info_box"><div class="info_list"><span>姓名</span><span>谭家俊</span></div><div class="info_list"><span>学号</span><span>202030100327</span></div><div class="info_list"><span>学院</span><span>设计学院</span></div><div class="info_list"><span>年级</span><span>2020</span></div><div class="info_list"><span>人员类型</span><span>本科生</span></div></div>
+
+					<div class="bottomTips">温馨提示：每次只能发起一次外出申请，外出申请生效期间内无法再次发起申请。</div>
+
+					<div class="btn_add" onclick="Global_FN.sub()" style="display: none;">提交</div>
+					<div class="btn_cancel" onclick="Global_FN.cancel()" style="display: none;">撤销</div>
+
+				</div>
+			</form>
+		</div>
+		
+		<div class="logo_box" style="display: block;">
+			<img id="logo" src="/static/img/pass.png" alt="">
+		</div>
+		<div class="disabled_mask" style="display: block;"></div>
+		
+	</div>	
+
+<!-- <script type="text/javascript" src="/static/css/layui.js"></script>	
+<script type="text/javascript" src="/static/css/weui.js"></script> -->
+<!-- <script type="text/javascript" src="/static/css/SysUtils.js"></script>
+<script src="/static/css/jweixin-1.2.0.js"></script>
+<script type="text/javascript" src="/static/css/apply.js"></script> -->
+<script type="text/javascript">
+	function getTime() {
+		var time = new Date();
+		var madetime=time.getFullYear()+"-"+(time.getMonth()+1)+"-"+time.getDate();
+    	document.getElementById("begintime").innerText = madetime;
+    	document.getElementById("endtime").innerText = madetime;
+    	}
+	getTime();
+</script>
+
+<svg id="zcomponents__svg" style="display: none;"></svg></body></html>

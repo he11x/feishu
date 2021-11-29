@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+
+    <div style="margin: 15% 40%;">
+       <img src="/static/img/GDUT_logo_school1.png">
+       <form method="post">
+          <p>
+             <label for="id_username">用户名：</label>
+             <input type="text" id="id_account" name="account" >
+          </p>
+          <p>
+             <label for="id_password">密码：</label>
+             <input type="password" id="id_password" name="password" >
+            </p>
+            <p>
+             <label for="id_verifycode">验证码：</label>
+             <img id = "img" src = "" onclick="changeVerifyCode()">
+             <input type="text" id="id_verifycode" name="verifycode">
+            </p>
+       </form>
+       <button onclick="submit()">确定</button>
+    </div>
+</body>
+<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/js/aes.js"></script>
+<script type="text/javascript">
+function changeVerifyCode(){
+    currentTime = new Date().getTime();
+    // document.getElementById("img").src = "https://jxfw.gdut.edu.cn/yzm?d=" + currentTime;
+    document.getElementById("img").src = '/api/gdut/yzm?d='  + currentTime;
+    console.log(document.cookie)
+}
+
+var getParam = function(name){
+    var search = document.location.search;
+    var pattern = new RegExp("[?&]"+name+"\=([^&]+)", "g");
+    var matcher = pattern.exec(search);
+    var items = null;
+    if(null != matcher){
+            try{
+                    items = decodeURIComponent(decodeURIComponent(matcher[1]));
+            }catch(e){
+                    try{
+                            items = decodeURIComponent(matcher[1]);
+                    }catch(e){
+                            items = matcher[1];
+                    }
+            }
+    }
+    return items;
+};
+
+function submit() {
+    var account = $("#id_account").val();
+    var password = $("#id_password").val();
+    var verifycode = $("#id_verifycode").val()
+    var code = getParam('code')
+
+    // 密码加密
+    var key = CryptoJS.enc.Utf8.parse(verifycode+verifycode+verifycode+verifycode);
+    var srcs = CryptoJS.enc.Utf8.parse(password);
+    var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+    password = encrypted.ciphertext.toString();
+    $.ajax({
+    url:'/api/gdut/login',
+    type : "post",
+    data : {
+    account : account,
+    password : password,
+    verifycode : verifycode
+    },
+    dataType : "json",
+    complete : function(res) {
+        if (res.responseJSON.code == 0 ) {
+            alert("登录成功");
+            $.ajax({
+            url:'/api/gdut/import',
+            type:'post',
+            dataType:'json',
+            data:{
+                code:code
+            }
+            });
+            window.location.href="https://easypustech.feishu.cn/calendar/week"
+        }       
+        else {
+            alert(res.responseJSON.message)
+        }
+
+    }
+    })
+};
+
+function gdut() {
+    var l_index = layer.load(1, {
+        shade : [ 0.1, '#fff' ]
+    //0.1透明度的白色背景
+     });
+    
+    var account = $("#account").val();
+    var pwd = $("#password").val();
+    var verifycode = $("#j_captcha").val()
+    
+    // 密码加密
+    var key = CryptoJS.enc.Utf8.parse(verifycode+verifycode+verifycode+verifycode);
+    var srcs = CryptoJS.enc.Utf8.parse(password);
+    var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+    password = encrypted.ciphertext.toString();
+    
+    //ajax提交表单，#login_form为表单的ID。 如：$('#login_form').ajaxSubmit(function(data) { ... });
+    $.ajax({
+    url : "https://jxfw.gdut.edu.cn/new/login",
+    type : "post",
+    data : {
+    account : account,
+    pwd : password,
+    verifycode : verifycode
+},
+dataType : "json",
+complete : function() {
+    layer.close(l_index);
+},
+success : function(result) {
+    if (result.code >= 0) {//登录成功
+        alert('登录成功');
+    } else {//登录失败
+        changeVerifyCode();
+        alert(result.message);
+    }
+        },
+        error : function() {
+            layer.alert("登录超时，请稍后重试！");
+        }
+    });
+}
+function jump(){ 
+    submit()
+    window.location.href="https://easypustech.feishu.cn/calendar/week";
+
+}
+changeVerifyCode()
+</script>
+</html>
+ 
