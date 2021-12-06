@@ -20,6 +20,6 @@
 
 /static文件夹中有前端HTML、js、css源码以及图片
 
-# 网页url
+# 项目地址
 
 backstage.easypus.com/feishu
